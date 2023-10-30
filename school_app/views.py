@@ -12,6 +12,10 @@ from random import randint
 from fuzzywuzzy import fuzz
 from datetime import date
 import time
+from PIL import Image
+import pytesseract
+import cv2
+import numpy as np
 
 
 def register_view(request):
@@ -225,6 +229,22 @@ def add_student(request):
     return render(request, 'add_student.html', {'form': form})
 
 
+def get_best_rotation(image):
+    rotations = [0, 90, 180, 270]
+    max_text_count = 0
+    best_rotation = 0
+
+    for rotation in rotations:
+        rotated_image = image.rotate(rotation)
+        text = pytesseract.image_to_string(rotated_image)
+        text_count = len(text)
+
+        if text_count > max_text_count:
+            max_text_count = text_count
+            best_rotation = rotation
+
+    return best_rotation
+
 @login_required
 def student_details(request, student_id):
     student = get_object_or_404(Student, id=student_id)
@@ -242,14 +262,26 @@ def student_details(request, student_id):
             student.save()
 
         if new_passport_scan:
+            image = Image.open(new_passport_scan)
+            best_rotation = get_best_rotation(image)
+            new_passport_scan = image.rotate(best_rotation)
+
             student.passport_scan = new_passport_scan
             student.save()
 
         if new_registration_scan:
+            image = Image.open(new_registration_scan)
+            best_rotation = get_best_rotation(image)
+            new_registration_scan = image.rotate(best_rotation)
+
             student.registration_scan = new_registration_scan
             student.save()
 
         if new_birth_certificate_scan:
+            image = Image.open(new_birth_certificate_scan)
+            best_rotation = get_best_rotation(image)
+            new_birth_certificate_scan = image.rotate(best_rotation)
+
             student.birth_certificate_scan = new_birth_certificate_scan
             student.save()
 
