@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=2">
+    <title>Учетная запись</title>
+    <style>
+        body {
+            text-align: center;
+        }
+
+        .profile-info {
+            text-align: center;
+        }
+
+        .profile-info img {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .edit-button {
+            cursor: pointer;
+        }
+
+        .edit-section ul {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+        }
+
+        .edit-section ul li {
+            margin: 10px 0;
+        }
+
+        .edit-section ul li input {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .edit-section ul li span {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .save-button {
+            display: block;
+            margin: 0 auto;
+            cursor: pointer;
+        }
+
+        #avatar-upload {
+            display: none;
+        }
+
+        .save-button {
+            width: 130px;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #0073e6;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .save-button:hover {
+            background-color: #005ba3;
+        }
+
+        .button2 {
+            width: 130px;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #008000;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .button2:hover {
+            background-color: #006400;
+        }
+        .delete-button {
+            width: 130px;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #960018;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .delete-button:hover {
+            background-color: #660011;
+        }
+
+        .profile-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-info {
+            text-align: left;
+            margin-left: 20px;
+        }
+        .center-table {
+        display: flex;
+        justify-content: center;
+    }
+
+    .center-table table {
+        text-align: center;
+    }
+
+    .main-menu-button {
+        width: 130px;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #FFD700;
+            color: #228B22	;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            border: none;
+    }
+    .main-menu-button:hover {
+    background-color: #FF8C00;
+    }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $(".edit-section").hide();
+
+            $(".edit-button").click(function (e) {
+                e.stopPropagation();
+                var editSection = $(this).next(".edit-section");
+                editSection.slideToggle();
+            });
+
+
+            $(".change-avatar-button").click(function () {
+                $("#avatar-upload").click();
+            });
+
+
+            $(".edit-section input").click(function (e) {
+                e.stopPropagation();
+            });
+
+
+            $(".edit-section form").click(function (e) {
+                e.stopPropagation();
+            });
+        });
+    </script>
+    <script>
+$(document).ready(function () {
+
+$(".logout-button").click(function () {
+    window.location.href = "{% url 'logout' %}";
+});
+
+$(".main-menu-button").click(function () {
+    window.location.href = "{% url 'main_menu' %}";
+});
+
+
+    $(".save-button").click(function () {
+
+        var data = {
+            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val(),
+            'new_full_name': $("input[name='new_full_name']").val(),
+            'new_class_number': $("input[name='new_class_number']").val(),
+            'new_class_letter': $("input[name='new_class_letter']").val()
+        };
+
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "profile" %}',
+            data: data,
+            success: function () {
+
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+
+                console.log(error);
+            }
+        });
+    });
+
+
+    $(".delete-button").click(function () {
+    if (confirm("Вы уверены, что хотите удалить аватар?")) {
+
+        if ("{{ user.profile.avatar }}" !== "") {
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url "profile" %}',
+                data: {
+                    'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val(),
+                    'delete_avatar': 'true'
+                },
+                success: function () {
+
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+
+                    console.log(error);
+                }
+            });
+        }
+    }
+});
+    $(".clear-button").click(function () {
+
+        $(".confirmation-popup").show();
+    });
+
+
+    $(".confirm-clear-button").click(function () {
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "clear_food_milk" %}',
+            data: {
+                'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val(),
+            },
+            success: function () {
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    });
+
+
+    $(".cancel-clear-button").click(function () {
+
+        $(".confirmation-popup").hide();
+    });
+
+
+    $(".button2").click(function () {
+        var expiration_hours = $("input[name='expiration_hours']").val();
+
+        if (expiration_hours === '') {
+            alert('Введите срок действия временного кода.');
+        } else if (parseInt(expiration_hours) > 24) {
+            alert('Срок действия не может быть больше 24 часов.');
+        } else {
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url "profile" %}',
+                data: {
+                    'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val(),
+                    'expiration_hours': expiration_hours
+                },
+                success: function () {
+
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+
+                    console.log(error);
+                }
+            });
+        }
+    });
+});
+</script>
+
+
+
+
+</head>
+<body>
+<h1>Учетная запись</h1>
+<div class="profile-container">
+    <div class="profile-info">
+        {% if user.profile.avatar %}
+        <img src="{{ user.profile.avatar.url }}" height="100">
+        {% endif %}
+    </div>
+    <div class="user-info">
+        {{ profile.full_name }}
+        {% if classroom.class_number and classroom.class_letter %}
+        <br>
+        Класс: {{ classroom.class_number }}{{ classroom.class_letter }}
+        {% endif %}
+    </div>
+</div>
+<div><button class="logout-button" style="margin-top:30px">Выйти</button></div>
+<button class="edit-button" style="margin-top:30px">Редактировать</button>
+
+
+<div class="edit-section">
+    <ul>
+        <li>
+            <form method="post" enctype="multipart/form-data" style="margin-bottom:35px;margin-top:35px;">
+                {% csrf_token %}
+                {{ avatar_form.as_p }}
+                <button type="submit" class="save-button" style="margin-bottom:50px">Сохранить
+            </button>
+                <div><button type="submit" class="delete-button" style="margin-bottom: 30px">Удалить аватар</button></div>
+                <input type="hidden" name="delete_avatar" value="true">
+            </form>
+        </li>
+        <li>
+            <span>Изменить ФИО:</span>
+            <input type="text" name="new_full_name">
+        </li>
+        {% if profile.whoami != 2 %}
+        <li>
+            <span>Изменить класс:</span>
+            <input type="text" name="new_class_number" placeholder="Номер класса">
+            <input type="text" name="new_class_letter" placeholder="Литера">
+        </li>
+        {% endif %}
+        <li>
+            <button type="submit" class="save-button" style="margin-bottom:50px">Сохранить
+            </button>
+        </li>
+        {% if profile.whoami != 2 %}
+        <li>
+            <span>Создать временный код:</span>
+            <input type="text" name="expiration_hours" placeholder="Срок действия (часы)">
+        </li>
+        <li>
+            <span class="button2">Создать</span>
+        </li>
+        {% endif %}
+
+
+    </ul>
+</div>
+<div style="margin-top:20px">{% if existing_code %}
+    <span>Временный код: {{ existing_code.code }}</span>
+    <span>Истекает: {{ existing_code.code_end_h }}:<span id="code_end_m">{{ existing_code.code_end_m }}</span></span>
+{% endif %}
+    <script>
+  var codeEndM = document.getElementById('code_end_m').innerText;
+
+  if (codeEndM.length === 1) {
+    codeEndM = '0' + codeEndM;
+    document.getElementById('code_end_m').innerText = codeEndM;
+  }
+</script>
+    </div>
+
+<div><button class="main-menu-button">главное меню</button></div>
+
+{% if profile.whoami == 1 %}
+<button class="clear-button" style="margin-top: 30px">Очистить список</button>
+<div class="confirmation-popup" style="display: none;">
+    <div class="confirmation-content">
+        <p>Вы уверены, что хотите очистить список?</p>
+        <button class="confirm-clear-button">Да</button>
+        <button class="cancel-clear-button">Отмена</button>
+    </div>
+</div>
+<h2>Food_milk Data: [как иначе назвать?]</h2>
+<div class="center-table">
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>класс</th>
+                    <th>платно</th>
+                    <th>льготники</th>
+                    <th>молоко</th>
+                    <th>дата</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for food_milk in food_milk_data %}
+                    <tr>
+                        <td>{{ food_milk.class_number }}{{ food_milk.class_letter }}</td>
+                        <td>{{ food_milk.num_paid }}</td>
+                        <td>{{ food_milk.num_discount }}</td>
+                        <td>{{ food_milk.num_milk }}</td>
+                        <td>{{ food_milk.date|date:"d-m-Y" }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table></div>
+    {% endif %}
+
+</body>
+</html>

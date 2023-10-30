@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Вход</title>
+    <style>
+    body {
+        text-align: center;
+    }
+    .visited-link {
+    color: #000;
+    text-decoration: none;
+
+  }
+  form {
+        display: inline-block;
+        text-align: center;
+        width: 200px;
+        margin: 0 auto;
+    }
+    .form-field {
+        margin: 10px 0;
+    }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=2">
+</head>
+<body>
+    <h1>Вход</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-field">
+            <label for="{{ form.username.id_for_label }}">Имя пользователя:</label>
+            {{ form.username }}
+        </div>
+        <div class="form-field">
+            <label for="{{ form.password.id_for_label }}">Пароль:</label>
+            {{ form.password }}
+        </div>
+
+
+        <div style="text-align: center;"><button type="submit" style="margin-top:10px; margin-bottom:35px; ">Войти</button></div>
+    </form>
+    <div><a href="{% url 'register' %}" class="visited-link">Зарегистрироваться</a></div>
+
+</body>
+</html>
+

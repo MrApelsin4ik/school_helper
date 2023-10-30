@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=2">
+    <title>Детали пользователя</title>
+    <style>
+
+        .edit-section {
+            display: none;
+        }
+        .main-menu-button {
+        width: 130px;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #FFD700;
+            color: #228B22	;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+	    margin-top: 20px;
+	    margin-bottom: 20px;
+	    border: none;
+    }
+    .main-menu-button:hover {
+    background-color: #FF8C00;
+    }
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".edit-button").click(function () {
+                var editSection = $(this).next(".edit-section");
+                editSection.slideToggle();
+            });
+            $(".main-menu-button").click(function () {
+    window.location.href = "{% url 'main_menu' %}";
+});
+});
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+
+</head>
+<body>
+<h1>Детали пользователя</h1>
+<div><button class="main-menu-button">главное меню</button></div>
+<h2>Информация о пользователе</h2>
+
+<table>
+    <tr>
+        <th>ФИО</th>
+        <td>{{ profile.full_name }}</td>
+    </tr>
+<tr>
+    <th>Аватар</th>
+    <td>
+        {% if profile.passport_scan %}
+            <a href="{{ profile.avatar.url }}" data-lightbox="passport">
+                <img src="{{ profile.avatar.url }}" alt="Аватар" style="max-height: 150px; max-width: 100%;">
+            </a>
+        {% endif %}
+    </td>
+</tr>
+<tr>
+
+    <tr>
+        <th>Класс</th>
+        <td>{{ classroom.class_number }}{{ classroom.class_letter }}</td>
+    </tr>
+</table>
+
+
+<h2>Редактировать информацию</h2>
+<button class="edit-button">Редактировать</button>
+<div class="edit-section">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="new_full_name">Новое ФИО:</label>
+        <input type="text" id="new_full_name" name="new_full_name" value="{{ profile.full_name }}"><br>
+
+        <label for="new_full_name">Смена класса:</label>
+        <input type="text" id="class_number" name="class_number" value="{{ classroom.class_number }}"><br>
+        <input type="text" id="class_letter" name="class_number" value="{{ classroom.class_letter }}"><br>
+        <input type="submit" value="Сохранить">
+    </form>
+</div>
+</body>
+</html>

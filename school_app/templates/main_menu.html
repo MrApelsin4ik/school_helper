@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=2">
+    <title>Главное меню</title>
+    <style>
+            body {
+                    text-align: center;
+                }
+            .element {
+                width: 200px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .button {
+                display: inline-block;
+                padding: 10px 20px;
+                background-color: #0073e6;
+                color: #fff;
+                text-decoration: none;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            .button:hover {
+                background-color: #005ba3;
+            }
+            .button2 {
+                display: inline-block;
+                padding: 10px 20px;
+                background-color: #008000;
+                color: #fff;
+                text-decoration: none;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            .button2:hover {
+                background-color: #006400;
+            }
+        </style>
+</head>
+<body onload="resetForm()">
+    <h1 class="element">Главное меню</h1>
+    {% if profile.whoami != 4%}
+    {% if classroom %}
+    <form method="post" id="myForm" action="{% url 'main_menu' %}">
+        {% csrf_token %}
+
+        <div >
+            <label style="font-size: 20px;">Класс: <b>{{ classroom.class_number }}{{ classroom.class_letter }}</b></label>
+        </div>
+
+        <div style="margin-top: 10px;">
+            {{ form.num_paid.label_tag }}
+        </div>
+        <div>
+            <input type="text" id="num_paid" name="num_paid">
+        </div>
+        <div>
+            {{ form.num_discount.label_tag }}
+        </div>
+        <div>
+            <input type="text" id="num_discount" name="num_discount">
+        </div>
+        <div>{{ form.milk.label_tag }}</div>
+        <div>
+            <input type="text" id="num_milk" name="milk">
+        </div>
+        <button style="margin-top:10px; margin-bottom:50px;" type="submit" >Сохранить</button>
+    </form>
+    <script>
+        function resetForm() {
+            document.getElementById("myForm").reset();
+            updateMilkValue();
+        }
+
+        function updateMilkValue() {
+            const numPaid = parseFloat(document.querySelector('[name="num_paid"]').value) || 0;
+            const numDiscount = parseFloat(document.querySelector('[name="num_discount"]').value) || 0;
+            const numMilk = numPaid + numDiscount;
+            document.querySelector('#num_milk').value = numMilk;
+        }
+
+        document.querySelector('[name="num_paid"]').addEventListener('input', updateMilkValue);
+        document.querySelector('[name="num_discount"]').addEventListener('input', updateMilkValue);
+
+        updateMilkValue();
+    </script>
+    {% endif %}
+    {% endif %}
+    <a  href="{% url 'profile' %}" class="button">Учетная запись</a>
+    {% if profile.whoami != 2 %}
+    <div><a  href="{% url 'search' %}" class="button2" style="margin-top:30px;">
+      Личные дела
+        </a></div>
+    {% endif %}
+</body>
+</html>

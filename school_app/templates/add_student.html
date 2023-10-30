@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=2">
+    <title>Добавить ученика</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    $(document).ready(function () {
+    $(".main-menu-button").click(function () {
+    window.location.href = "{% url 'main_menu' %}";
+});
+});
+</script>
+    <style>.main-menu-button {
+        width: 130px;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #FFD700;
+            color: #228B22	;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border: none;
+    }
+    .main-menu-button:hover {
+    background-color: #FF8C00;
+    }</style>
+</head>
+<body>
+
+<div><button class="main-menu-button">главное меню</button></div>
+
+<h1>Добавить ученика</h1>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <label for="full_name">ФИО:</label>
+    <input type="text" id="full_name" name="full_name" value="{{ form.full_name.value }}"><br>
+
+    <label for="passport_scan">Загрузить скан паспорта:</label>
+    <input type="file" id="passport_scan" name="passport_scan"><br>
+
+    <label for="registration_scan">Загрузить скан регистрации:</label>
+    <input type="file" id="registration_scan" name="registration_scan"><br>
+
+    <label for="birth_certificate_scan">Загрузить скан свидетельства о рождении:</label>
+    <input type="file" id="birth_certificate_scan" name="birth_certificate_scan"><br>
+
+    <label for="class_number">Номер класса:</label>
+    <input type="number" id="class_number" name="class_number" value="{{ form.class_number.value }}"><br>
+
+    <label for="class_letter">Буква класса:</label>
+    <input type="text" id="class_letter" name="class_letter" value="{{ form.class_letter.value }}"><br>
+
+    <input type="submit" value="Создать">
+</form>
+
+
+</body>
+</html>

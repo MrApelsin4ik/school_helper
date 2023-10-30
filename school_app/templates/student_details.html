@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=2">
+    <title>Детали студента</title>
+    <style>
+
+        .edit-section {
+            display: none;
+        }
+        .main-menu-button {
+        width: 130px;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #FFD700;
+            color: #228B22	;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+	    margin-top: 20px;
+	    margin-bottom: 20px;
+	    border: none;
+    }
+    .main-menu-button:hover {
+    background-color: #FF8C00;
+    }
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".edit-button").click(function () {
+                var editSection = $(this).next(".edit-section");
+                editSection.slideToggle();
+            });
+            $(".main-menu-button").click(function () {
+    window.location.href = "{% url 'main_menu' %}";
+});
+
+
+        });
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+
+</head>
+<body>
+<h1>Детали студента</h1>
+<div><button class="main-menu-button">главное меню</button></div>
+<h2>Информация о студенте</h2>
+
+<table>
+    <tr>
+        <th>ФИО</th>
+        <td>{{ student.full_name }}</td>
+    </tr>
+<tr>
+    <th>Скан паспорта</th>
+    <td>
+        {% if student.passport_scan %}
+            <a href="{{ student.passport_scan.url }}" data-lightbox="passport">
+                <img src="{{ student.passport_scan.url }}" alt="Паспорт" style="max-height: 150px; max-width: 100%;">
+            </a>
+        {% endif %}
+    </td>
+</tr>
+<tr>
+    <th>Скан регистрации</th>
+    <td>
+        {% if student.registration_scan %}
+            <a href="{{ student.registration_scan.url }}" data-lightbox="registration">
+                <img src="{{ student.registration_scan.url }}" alt="Регистрация" style="max-height: 150px; max-width: 100%;">
+            </a>
+        {% endif %}
+    </td>
+</tr>
+<tr>
+    <th>Скан свидетельства о рождении</th>
+    <td>
+        {% if student.birth_certificate_scan %}
+            <a href="{{ student.birth_certificate_scan.url }}" data-lightbox="birth_certificate">
+                <img src="{{ student.birth_certificate_scan.url }}" alt="Свидетельство о рождении" style="max-height: 150px; max-width: 100%;">
+            </a>
+        {% endif %}
+    </td>
+</tr>
+
+    <tr>
+        <th>Класс</th>
+        <td>{{ student.class_number }}{{ student.class_letter }}</td>
+    </tr>
+</table>
+
+
+<h2>Редактировать информацию</h2>
+<button class="edit-button">Редактировать</button>
+<div class="edit-section">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="new_full_name">Новое ФИО:</label>
+        <input type="text" id="new_full_name" name="new_full_name" value="{{ student.full_name }}"><br>
+
+        <label for="new_passport_scan">Новый скан паспорта:</label>
+        <input type="file" id="new_passport_scan" name="new_passport_scan"><br>
+
+        <label for="new_registration_scan">Новый скан регистрации:</label>
+        <input type="file" id="new_registration_scan" name="new_registration_scan"><br>
+
+        <label for="new_birth_certificate_scan">Новый скан свидетельства о рождении:</label>
+        <input type="file" id="new_birth_certificate_scan" name="new_birth_certificate_scan"><br>
+        <label for="new_full_name">Смена класса:</label>
+        <input type="text" id="new_class_number" name="new_class_number" value="{{ student.class_number }}"><br>
+        <input type="text" id="new_class_letter" name="new_class_number" value="{{ student.class_letter }}"><br>
+
+        <input type="submit" value="Сохранить">
+    </form>
+</div>
+</body>
+</html>

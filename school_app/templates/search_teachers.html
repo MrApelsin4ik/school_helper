@@ -1,0 +1,227 @@
+<!-- search_teachers.html -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=2">
+<title>Поиск учителей и учеников</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".main-menu-button").click(function () {
+        window.location.href = "{% url 'main_menu' %}";
+        });
+
+
+        $(".show-all-students-button").click(function () {
+            var url = "{% url 'all_students_t' %}";
+            window.location.href = url;
+        });
+
+
+        $(".show-all-teachers-button").click(function () {
+            var url = "{% url 'all_teachers' %}";
+            window.location.href = url;
+        });
+
+    });
+</script>
+
+<style>
+    .visited-link {
+    color: #000;
+    text-decoration: none;
+    }
+
+    .main-menu-button {
+    width: 130px;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #FFD700;
+    color: #228B22 ;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: none;
+    }
+
+    .main-menu-button:hover {
+    background-color: #FF8C00;
+    }
+
+    .show-all-students-button {
+    width: 110px;
+    display: inline-block;
+    padding: 5px;
+    background-color: #008000;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-align: center;
+    }
+
+    .show-all-students-button:hover {
+    background-color: #006400;
+    }
+
+    .show-all-teachers-button {
+    width: 110px;
+    display: inline-block;
+    padding: 5px;
+    background-color: #2872e0;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+    }
+
+    .show-all-teachers-button:hover {
+    background-color: #00337a;
+    }
+
+
+    .delete-button {
+    display: inline-block;
+    padding: 5px;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    background-color: #FF0000;
+    color: #fff;
+    }
+
+    .head-teacher-button {
+    display: inline-block;
+    padding: 5px;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    background-color: #00FF00;
+    color: #fff;
+    }
+
+    .head-milk-button {
+    display: inline-block;
+    padding: 5px;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    background-color: #0000FF;
+    color: #fff;
+    }
+    .teacher-button {
+    display: inline-block;
+    padding: 5px;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    background-color: #cf82d2;
+    color: #fff;
+    }
+    }
+</style>
+</head>
+<body>
+<h1>Поиск учителей и учеников</h1>
+<div><button class="main-menu-button">главное меню</button></div>
+<form id="search-students-form" method="post" action="{% url 'search_teachers' %}" style="margin-bottom: 30px;">
+    {% csrf_token %}
+    <input type="text" name="search_query" id="search_query_students" placeholder="Поиск учеников..." required>
+    <button type="submit">Найти</button>
+</form>
+
+<a href="{% url 'all_students_t' %}" class="show-all-students-button">Показать всех учеников</a>
+
+<form id="search-teachers-form" method="post" action="{% url 'search_teachers' %}" style="margin-bottom: 30px;">
+    {% csrf_token %}
+    <input type="text" name="search_query" id="search_query_teachers" placeholder="Поиск учителей..." required>
+    <button type="submit">Найти</button>
+</form>
+
+<a href="{% url 'all_teachers' %}" class="show-all-teachers-button visited-link">Показать всех учителей</a>
+
+<div id="change-class-form" style="margin-bottom: 30px;">
+    <h2>Изменить группу класса</h2>
+    <form id="change-classroom-form" method="post" action="{% url 'change_classroom' %}">
+        {% csrf_token %}
+        <label for="class_number" style="width: 50px;">Номер класса:</label>
+        <input type="text" name="class_number" required maxlength="2" style="width: 30px;">
+        <label for="new_class_number" style="width: 100px;">Новый номер класса:</label>
+        <input type="text" name="new_class_number" required maxlength="2" style="width: 30px;">
+
+        <div>
+            <label for="class_letter" style="width: 50px; margin-right:5px;">Буква класса:</label>
+            <input type="text" name="class_letter" required maxlength="1" style="width: 30px;">
+            <label for="new_class_letter" style="width: 100px; margin-right:9px;">Новая буква класса:</label>
+            <input type="text" name="new_class_letter" required maxlength="1" style="width: 30px;">
+
+        </div>
+        <div>
+            <button type="submit" class="button">Сохранить</button>
+        </div>
+    </form>
+</div>
+
+
+
+<div id="search_results" style="margin-bottom: 30px;">
+    {% if students %}
+    <h2>Результаты поиска учеников</h2>
+    <table>
+        <tr>
+            <th>ФИО</th>
+            <th>Действия</th>
+        </tr>
+        {% for student in students %}
+        <tr>
+            <td><a href="{% url 'student_details' student.id %}" class="visited-link">{{ student.full_name }}</a></td>
+            <td>
+                <a href="{% url 'delete_student' student.id %}" class="visited-link delete-button">Удалить</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% elif request.GET.all_students %}
+    <p>Нет результатов поиска учеников.</p>
+    {% endif %}
+</div>
+
+
+<div id="search_results2" style="margin-bottom: 30px;">
+    {% if teachers %}
+    <h2>Результаты поиска учителей</h2>
+    <table>
+        <tr>
+            <th>ФИО</th>
+            <th>Роль</th>
+            <th>Изменить роль</th>
+            <th>Действия</th>
+        </tr>
+        {% for teacher in teachers %}
+        <tr>
+            <td><a href="{% url 'user_details' teacher.user.id %}" class="visited-link">{{ teacher.full_name }}</a></td>
+            <td>{% if teacher.whoami == 1 %} Завпит {% endif %}
+                {% if teacher.whoami == 3 %} Учитель {% endif %}
+                {% if teacher.whoami == 4 %} Завуч {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'make_head_teacher' teacher.user.id %}" class="visited-link head-teacher-button">Завуч</a>
+                <a href="{% url 'make_head_milk' teacher.user.id %}" class="visited-link head-milk-button">Зав пит</a>
+                <a href="{% url 'make_teacher' teacher.user.id %}" class="visited-link teacher-button">Учитель</a>
+            </td>
+            <td>
+                <a href="{% url 'delete_user' teacher.user.id %}" class="visited-link delete-button">Удалить</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% elif request.GET.all_teachers %}
+    <p>Нет результатов поиска учителей.</p>
+    {% endif %}
+</div>
+</body>
+</html>

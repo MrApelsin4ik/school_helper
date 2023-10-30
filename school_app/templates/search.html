@@ -1,0 +1,121 @@
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=2">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function () {
+
+    $(".edit-section").hide();
+
+    $(".edit-button").click(function (e) {
+      e.stopPropagation();
+      var editSection = $(this).closest('tr').find(".edit-section");
+      editSection.slideToggle();
+    });
+
+
+    $("a.student-link").click(function (e) {
+      e.preventDefault();
+      var studentId = $(this).data("student-id");
+      var url = "{% url 'student_details' 0 %}".replace('0', studentId);
+      window.location.href = url;
+    });
+
+
+    $(".edit-section input").click(function (e) {
+      e.stopPropagation();
+    });
+
+
+    $(".edit-section form").click(function (e) {
+      e.stopPropagation();
+    });
+
+
+    $(".main-menu-button").click(function () {
+      window.location.href = "{% url 'main_menu' %}";
+    });
+
+  });
+</script>
+
+<style>
+
+  .main-menu-button {
+        width: 120px;
+            display: inline-block;
+            padding: 10px;
+            background-color: #FFD700;
+            color: #228B22	;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 20px;
+	        margin-bottom: 20px;
+	        border: none;
+    }
+    .main-menu-button:hover {
+    background-color: #FF8C00;
+    }
+
+
+  .visited-link {
+    color: #000;
+    text-decoration: none;
+  }
+  .show-all-students-button {
+    width: 110px;
+    display: inline-block;
+    padding: 5px;
+    background-color: #008000;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-align: center;
+    }
+  .show-all-students-button:hover {
+    background-color: #006400;
+    }
+  .add-student-button {
+    width: 110px;
+    display: inline-block;
+    padding: 5px;
+    background-color: #1476ff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+    }
+  .add-student-button:hover {
+  background-color: #00337a;
+  }
+</style>
+</head>
+<div><button class="main-menu-button">главное меню</button></div>
+<form id="search_form" method="post" action="{% url 'search' %}">
+  {% csrf_token %}
+  <input type="text" name="search_query" id="search_query" placeholder="Поиск..." required>
+  <button type="submit">Найти</button>
+</form>
+<a href="{% url 'all_students' %}" class="show-all-students-button">Показать всех учеников</a>
+
+<div id="search_results" style="margin-bottom:30px;">
+  {% if students %}
+    <table>
+      <tr>
+        <th>ФИО</th>
+      </tr>
+      {% for student in students %}
+        <tr>
+          <td><a href="{% url 'student_details' student.id %}" class="visited-link">{{ student.full_name }}</a></td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% elif request.GET.all_students %}
+    <p>Нет результатов поиска.</p>
+  {% endif %}
+</div>
+
+<a href="{% url 'add_student' %}" class="add-student-button" >Добавить ученика</a>
