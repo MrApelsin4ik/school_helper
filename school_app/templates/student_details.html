@@ -4,7 +4,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=2">
     <title>Детали студента</title>
     <style>
+        body {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          margin: 0;
+          padding: 0;
+          background-color: #f0f0f0;
+          text-align: center;
+        }
 
+        .content {
+          max-width: 100%;
+          text-align: center;
+          padding: 20px;
+        }
         .edit-section {
             display: none;
         }
@@ -110,7 +126,7 @@
         <input type="file" id="new_birth_certificate_scan" name="new_birth_certificate_scan"><br>
         <label for="new_full_name">Смена класса:</label>
         <input type="text" id="new_class_number" name="new_class_number" value="{{ student.class_number }}"><br>
-        <input type="text" id="new_class_letter" name="new_class_number" value="{{ student.class_letter }}"><br>
+        <input type="text" id="new_class_letter" name="new_class_letter" value="{{ student.class_letter }}"><br>
 
         <input type="submit" value="Сохранить">
     </form>

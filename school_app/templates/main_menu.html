@@ -4,9 +4,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=2">
     <title>Главное меню</title>
     <style>
-            body {
-                    text-align: center;
-                }
+        body {
+          display: flex;
+          min-height: 100vh;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          margin: 0;
+          padding: 0;
+          background-color: #f0f0f0;
+          text-align: center;
+        }
+
+        .content {
+          max-width: 100%;
+          text-align: center;
+          padding: 20px;
+        }
             .element {
                 width: 200px;
                 margin-left: auto;
@@ -36,6 +51,8 @@
             .button2:hover {
                 background-color: #006400;
             }
+
+
         </style>
 </head>
 <body onload="resetForm()">
